@@ -1,0 +1,19 @@
+<template>
+    <lightning-card  variant="Narrow"  title="Functions Details" icon-name="standard:account">
+        <div class="slds-m-around_small">
+            <lightning-input type="text" variant="standard" name="Name" value={functionRecord.Name} label="name" placeholder="type here..." onchange={manageChange}></lightning-input>
+
+            <c-customlookup onselect={managelookup} object-name="Function_Coordinator__c" field-name="Name" parentidfield="Function_Coordinator__c" iconname="Standard:People" label="Function Coordinator" ></c-customlookup>
+
+            <lightning-input type="datetime" variant="standard" name="Start_DateTime__c" value={functionRecord.Start_DateTime__c} label="Start Date" placeholder="type here..." onchange={manageChange}></lightning-input>
+
+            <lightning-input type="number" variant="standard" name="Maxseats__c" value={functionRecord.Maxseats__c} label="Max Participants" placeholder="type here..." onchange={manageChange}></lightning-input>
+
+            <c-customlookup onselect={managelookup} object-name="Venue__c" field-name="Name" parentidfield="Venue__c" iconname="utility:location" label="Function Venue" ></c-customlookup>
+
+            <lightning-input-rich-text type="number" variant="standard" name="Function_Detail__c" value={functionRecord.Function_Detail__c} label="Function Details" placeholder="type here..." onchange={manageChange}></lightning-input-rich-text>
+
+
+        </div>
+    </lightning-card>
+</template>
