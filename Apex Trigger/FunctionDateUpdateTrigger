@@ -1,36 +1,31 @@
-trigger EventDateUpdateTrigger on Event__c (after update) {
-    Set<Id> eventIds = new Set<Id>();
-    List<Participant__c> participantsToSendNotification = new List<Participant__c>();
+// Prerequisites :
+// Create a new Email feild in the function participant object otherwise this apex trigger will fail.
+
+trigger FunctionDateUpdateTrigger on Function__c (after update) {
+    Set<Id> functionIds = new Set<Id>();
+    List<Function_Participant__c> participantsToSendNotification = new List<Function_Participant__c>();
 
     // Check if Event Date has been modified and collect Event IDs
-    for (Event__c event : Trigger.new) {
-        Event__c oldEvent = Trigger.oldMap.get(event.Id);
-        if (event.Date__c != oldEvent.Date__c) {
-            eventIds.add(event.Id);
+    for (Function__c function : Trigger.new) {
+        Function__c oldFunction = Trigger.oldMap.get(function.Id);
+        if (function.Start_DateTime__c != oldFunction.Start_DateTime__c) {
+            functionIds.add(function.Id);
         }
     }
 
     // Retrieve the related Participant records
-    List<Participant__c> participants = [SELECT Id, Name, Email__c FROM Participant__c WHERE Event__c IN :eventIds];
+    List<Function_Participant__c> participants = [SELECT Id, Name, Email__c FROM Function_Participant__c WHERE Function__c IN :functionIds];
 
     // Add Participants to the list for sending notifications
     participantsToSendNotification.addAll(participants);
 
     // Send notifications to each Participant
-    for (Participant__c participant : participantsToSendNotification) {
+    for (Function_Participant__c participant : participantsToSendNotification) {
         sendNotification(participant);
     }
-}
-
-private static void sendNotification(Participant__c participant) {
-    // Add your logic here to send the notification to the Participant
-    // using the provided participant details (e.g., Name, Email__c).
-    // You can use email services, third-party integrations, or any other appropriate method to send the notification.
-    // Customize the content and format of the notification based on your requirements.
-}
 
 
-private static void sendNotification(Participant__c participant) {
+public static void sendNotification(Function_Participant__c participant) {
     // Add your logic here to send the notification to the Participant
     // using the provided participant details (e.g., Name, Email__c).
     
@@ -55,5 +50,6 @@ private static void sendNotification(Participant__c participant) {
             System.debug('Failed to send notification email to: ' + participant.Email__c + ', Error: ' + result.getErrors()[0].getMessage());
         }
     }
+}
 }
 
