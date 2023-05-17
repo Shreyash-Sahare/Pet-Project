@@ -28,3 +28,32 @@ private static void sendNotification(Participant__c participant) {
     // You can use email services, third-party integrations, or any other appropriate method to send the notification.
     // Customize the content and format of the notification based on your requirements.
 }
+
+
+private static void sendNotification(Participant__c participant) {
+    // Add your logic here to send the notification to the Participant
+    // using the provided participant details (e.g., Name, Email__c).
+    
+    // Construct the email message
+    Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+    
+    // Set the recipient's email address
+    email.setToAddresses(new List<String>{participant.Email__c});
+    
+    // Set the email subject and body
+    email.setSubject('Event Date Update Notification');
+    email.setPlainTextBody('Dear ' + participant.Name + ',\n\nThe date of the event you are participating in has been updated. Please take note of the changes.\n\nThank you.');
+    
+    // Send the email using the default email sender
+    Messaging.SendEmailResult[] emailResults = Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{email});
+    
+    // Check the email sending results
+    for (Messaging.SendEmailResult result : emailResults) {
+        if (result.isSuccess()) {
+            System.debug('Notification email sent successfully to: ' + participant.Email__c);
+        } else {
+            System.debug('Failed to send notification email to: ' + participant.Email__c + ', Error: ' + result.getErrors()[0].getMessage());
+        }
+    }
+}
+
