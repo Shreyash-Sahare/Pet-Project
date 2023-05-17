@@ -1,0 +1,30 @@
+trigger EventDateUpdateTrigger on Event__c (after update) {
+    Set<Id> eventIds = new Set<Id>();
+    List<Participant__c> participantsToSendNotification = new List<Participant__c>();
+
+    // Check if Event Date has been modified and collect Event IDs
+    for (Event__c event : Trigger.new) {
+        Event__c oldEvent = Trigger.oldMap.get(event.Id);
+        if (event.Date__c != oldEvent.Date__c) {
+            eventIds.add(event.Id);
+        }
+    }
+
+    // Retrieve the related Participant records
+    List<Participant__c> participants = [SELECT Id, Name, Email__c FROM Participant__c WHERE Event__c IN :eventIds];
+
+    // Add Participants to the list for sending notifications
+    participantsToSendNotification.addAll(participants);
+
+    // Send notifications to each Participant
+    for (Participant__c participant : participantsToSendNotification) {
+        sendNotification(participant);
+    }
+}
+
+private static void sendNotification(Participant__c participant) {
+    // Add your logic here to send the notification to the Participant
+    // using the provided participant details (e.g., Name, Email__c).
+    // You can use email services, third-party integrations, or any other appropriate method to send the notification.
+    // Customize the content and format of the notification based on your requirements.
+}
