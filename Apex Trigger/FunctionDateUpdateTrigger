@@ -1,11 +1,11 @@
 // Prerequisites :
 // Create a new Email feild in the function participant object otherwise this apex trigger will fail.
-
+ 
 trigger FunctionDateUpdateTrigger on Function__c (after update) {
     Set<Id> functionIds = new Set<Id>();
     List<Function_Participant__c> participantsToSendNotification = new List<Function_Participant__c>();
 
-    // Check if Event Date has been modified and collect Event IDs
+    // Check if Function Date has been modified and collect Function IDs
     for (Function__c function : Trigger.new) {
         Function__c oldFunction = Trigger.oldMap.get(function.Id);
         if (function.Start_DateTime__c != oldFunction.Start_DateTime__c) {
@@ -13,7 +13,7 @@ trigger FunctionDateUpdateTrigger on Function__c (after update) {
         }
     }
 
-    // Retrieve the related Participant records
+    //  Now we Retrieve the related Participant records
     List<Function_Participant__c> participants = [SELECT Id, Name, Email__c FROM Function_Participant__c WHERE Function__c IN :functionIds];
 
     // Add Participants to the list for sending notifications
@@ -37,19 +37,19 @@ public static void sendNotification(Function_Participant__c participant) {
     
     // Set the email subject and body
     email.setSubject('Event Date Update Notification');
-    email.setPlainTextBody('Dear ' + participant.Name + ',\n\nThe date of the event you are participating in has been updated. Please take note of the changes.\n\nThank you.');
+    email.setPlainTextBody('Dear ' + participant.Name + ',\n\nThe date of the Function you are participating in has been updated. Please take note of the changes.\n\nThank you.');
     
     // Send the email using the default email sender
     Messaging.SendEmailResult[] emailResults = Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{email});
     
     // Check the email sending results
-    for (Messaging.SendEmailResult result : emailResults) {
-        if (result.isSuccess()) {
-            System.debug('Notification email sent successfully to: ' + participant.Email__c);
-        } else {
-            System.debug('Failed to send notification email to: ' + participant.Email__c + ', Error: ' + result.getErrors()[0].getMessage());
-        }
-    }
+ //   for (Messaging.SendEmailResult result : emailResults) {
+  //      if (result.isSuccess()) {
+  //          System.debug('Notification email sent successfully to: ' + participant.Email__c);
+  //      } else {
+  //          System.debug('Failed to send notification email to: ' + participant.Email__c + ', Error: ' + result.getErrors()[0].getMessage());
+  //      }
+ //   }
 }
 }
 
