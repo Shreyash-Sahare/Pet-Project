@@ -1,0 +1,28 @@
+import { LightningElement } from 'lwc';
+import FUNCTION_OBJECT from '@salesforce/schema/Function'
+import NAME_FIELD from '@salesforce/schema/Function.Name__c'
+import FUNCTION_COORDINATOR_FIELD from '@salesforce/schema/Function.Function_Coordinator__c'
+import START_DATE_TIME_FIELD from '@salesforce/schema/Function.Start_DateTime__c'
+import MAX_SEATS_FIELD from '@salesforce/schema/Function.Maxseats__c'
+import VENUE_FIELD from '@salesforce/schema/Function.Venue__c'
+import FUNCTION_DETAIL_FIELD from '@salesforce/schema/Function.Function_Detail__c'
+export default class FunctionObjectForm extends LightningElement {
+    objectName = FUNCTION_OBJECT
+    fieldList = [NAME_FIELD, FUNCTION_COORDINATOR_FIELD, START_DATE_TIME_FIELD, MAX_SEATS_FIELD, VENUE_FIELD, FUNCTION_DETAIL_FIELD]
+
+    successHandler(event){
+        console.log(event.detail.id)
+    }
+
+}
+
+
+<template>
+    <lightning-card title="Function Registration Form">
+       <lightning-record-form
+        object-api-name={objectName}
+        fields={fieldList}
+        onsuccess={successHandler}
+       ></lightning-record-form>
+    </lightning-card>
+</template>
